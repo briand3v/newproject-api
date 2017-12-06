@@ -8,10 +8,12 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 
 // require routes
-const users = require('./routes/users');
+const auth = require('./routes/auth');
+const photo = require('./routes/photos');
 
 const app = express();
 
@@ -77,11 +79,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors());
 
 
 // routes
 
-app.use('/', users);
+app.use('/', auth);
+app.use('/', photo);
 
 // Error handler and 404
 app.use(function (req, res, next) {

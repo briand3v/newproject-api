@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/photography');
 
 const user = [{
-    username: "brian",
+    username: "hello",
     password: "callofduty"
 }
 ];

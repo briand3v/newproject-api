@@ -2,19 +2,20 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const passport = require('passport');
+const bcrypt = require('bcrypt');
 
 /* GET users listing. */
-router.get('/users', function (req, res, next) {
-  User.find({}, (err, users) => {
-    if (err) {
-      return next(err)
-    }
+// router.get('/users', function (req, res, next) {
+//   User.find({}, (err, users) => {
+//     if (err) {
+//       return next(err)
+//     }
 
-    res.json(users);
+//     res.json(users);
 
 
-  })
-});
+//   }) 
+// });
 
 router.post('/signup', (req, res, next) => {
   const username = req.body.username;
