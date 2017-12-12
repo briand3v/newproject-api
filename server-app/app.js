@@ -9,11 +9,15 @@ const LocalStrategy = require('passport-local');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+const response = require('./helpers/response');
+const MongoStore = require('connect-mongo')(session);
+const User = require('./models/user').User;
 
 
 // require routes
 const auth = require('./routes/auth');
 const photo = require('./routes/photos');
+const user = require('./routes/user');
 
 const app = express();
 
@@ -21,7 +25,10 @@ const app = express();
 
 // connect mongodb
 
+mongoose.Promise = Promise;
 mongoose.connect('mongodb://localhost/photography', {
+  keepAlive: true,
+  reconnectTries: Number.MAX_VALUE,
   useMongoClient: true
 });
 
@@ -62,45 +69,90 @@ passport.deserializeUser((userIdFromSession, cb) => {
   });
 });
 
-// session
+// corsssssssssssssss
 
-app.use(session({
-  secret: 'angular auth passport secret shh',
-  resave: true,
-  saveUninitialized: true,
-  cookie: { httpOnly: true, maxAge: 2419200000 }
+app.use(cors({
+  credentials: true,
+  origin: ['http://localhost:4200']
 }));
 
+
+// const allowCrossDomain = function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', "*");
+//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type');
+//   next();
+// }
+
+
+// app.use(allowCrossDomain);
+//some other code
+
+app.use(function(req, res, next) {
+  //set headers to allow cross origin request.
+  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
+
+
+
+
+app.use(express.static("public"));
+
+// session
+app.use(session({
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 24 * 60 * 60 // 1 day
+  }),
+  secret: 'todo-app',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}));
+
+// passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // middlewares
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(cors());
+
+
 
 
 // routes
 
 app.use('/', auth);
 app.use('/', photo);
+app.use('/', user);
+
+
 
 // Error handler and 404
 app.use(function (req, res, next) {
-  res.status(404);
-  res.json({ error: "not found" });
+  response.notFound(req, res);
 });
 
+// NOTE: requires a views/error.ejs template
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
+  // always log the error
   console.error('ERROR', req.method, req.path, err);
 
-  // render the error page
-  if (!res.headersSent)
-    res.status(500);
-  res.json({ error: 'unexpected' });
+  // only send if the error ocurred before sending the response
+  if (!res.headersSent) {
+    response.unexpectedError(req, res, err);
+  }
 });
 
 module.exports = app;

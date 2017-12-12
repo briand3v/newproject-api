@@ -1,22 +1,41 @@
-const mongoose = require("mongoose");
+
+
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// http://mongoosejs.com/docs/schematypes.html
-// const ObjectId = mongoose.Schema.Types.ObjectId;
-
 const UserSchema = new Schema({
-    username: String,
-    password: String,
-    img: String,
-    item: [{
-        img: String,
+    username: {
+        type: String,
+        required: [true, 'Username is required']
+    },
 
-    }]
+    password: {
+        type: String,
+        required: [true, 'Password is required']
+    },
+    profileName: String,
+    profileImg: String,
+    title: String,
+    description: String,
+    firstName: String,
+    lastName: String,
+    email: String
+});
 
+UserSchema.methods.asData = function () {
+    return {
+        id: this._id,
+        username: this.username,
+        profileName: this.profileName
+        // profileImg: this.profileImg,
+        // title: this.title,
+        // description: this.description
 
-}, {
-        timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
-    });
+    };
+};
 
-const User = mongoose.model("User", UserSchema);
-module.exports = User;
+const User = mongoose.model('User', UserSchema);
+
+module.exports = {
+    User
+};
