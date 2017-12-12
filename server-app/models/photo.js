@@ -11,6 +11,7 @@ const PhotoSchema = new Schema({
     },
     img: String,
     description: String,
+    username: String,
     comments: [{ description: String }]
 
 

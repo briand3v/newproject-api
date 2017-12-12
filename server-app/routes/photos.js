@@ -9,13 +9,14 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 // upload images
 
-router.post("/user/:id", (req, res, next) => {
-  const id = req.params.id;
-  
+router.post("/user/upload", (req, res, next) => {
+
+
   const newPhoto = new Photos({
-    owner: id,
+    owner: req.user,
     img: req.body.filename,
     description: req.body.description,
+    username: req.user.username,
   });
 
   newPhoto.save(err => {
@@ -24,7 +25,7 @@ router.post("/user/:id", (req, res, next) => {
       return;
     }
 
-    res.json({ message: "Photo added", id: newPhoto._id, });
+    res.json({ message: "Photo added", id: newPhoto._id, description: newPhoto.description, img: newPhoto.img, username: newPhoto.username });
   });
 });
 
@@ -46,31 +47,29 @@ router.get('/photos', (req, res, next) => {
 });
 
 
-router.post('/user/:id', (req, res, next) => {
-  const id = req.params.id;
-  Photos.find({}, (err, photos) => {
+router.get('/photos/owner', (req, res, next) => {
+
+  Photos.find({ owner: req.user._id }, (err, photos) => {
     if (err) {
       return next(err)
     }
     res.json(photos);
   })
-});
-
-router.get('/photos/:id', (req, res, next) => {
-  const idPhoto = req.param.id;
 
 });
 
-
-
-
-
-
-
-
-router.delete('/photos/:id', (req, res, next) => {
+router.get('/photo/owner/:id/:photoId', (req, res, next) => {
+  const username = req.params.id;
+  const photo = req.params.photoId;
+  Photos.findOne({ username: username, _id: photo }, (err, photo) => {
+    if (err) {
+      return next(err)
+    }
+    res.json(photo);
+  })
 
 });
+
 
 router.delete('/photos/:id/comments', (req, res, next) => {
 

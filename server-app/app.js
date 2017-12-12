@@ -71,10 +71,10 @@ passport.deserializeUser((userIdFromSession, cb) => {
 
 // corsssssssssssssss
 
-app.use(cors({
-  credentials: true,
-  origin: ['http://localhost:4200']
-}));
+// app.use(cors({
+//   credentials: true,
+//   origin: ['http://localhost:4200']
+// }));
 
 
 // const allowCrossDomain = function (req, res, next) {
@@ -88,7 +88,7 @@ app.use(cors({
 // app.use(allowCrossDomain);
 //some other code
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   //set headers to allow cross origin request.
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
