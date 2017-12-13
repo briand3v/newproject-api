@@ -26,7 +26,7 @@ const app = express();
 // connect mongodb
 
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/photography', {
+mongoose.connect(process.env.MONGODB_URI, {
   keepAlive: true,
   reconnectTries: Number.MAX_VALUE,
   useMongoClient: true
@@ -71,11 +71,10 @@ passport.deserializeUser((userIdFromSession, cb) => {
 
 // corsssssssssssssss
 
-// app.use(cors({
-//   credentials: true,
-//   origin: ['http://localhost:4200']
-// }));
-
+app.use(cors({
+  credentials: true,
+  origin: [process.env.CLIENT_URL]
+}));
 
 // const allowCrossDomain = function (req, res, next) {
 //   res.header('Access-Control-Allow-Origin', "*");

@@ -19,8 +19,12 @@ const UserSchema = new Schema({
     description: String,
     firstName: String,
     lastName: String,
-    email: String
-});
+    email: String,
+
+},
+    {
+        timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
+    });
 
 UserSchema.methods.asData = function () {
     return {

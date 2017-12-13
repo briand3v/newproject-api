@@ -12,7 +12,17 @@ const PhotoSchema = new Schema({
     img: String,
     description: String,
     username: String,
-    comments: [{ description: String }]
+    comments: [
+        {
+            owner: String,
+            // {
+            //     type: String,
+            //     ref: 'User'
+            // },
+            description: String,
+
+        }
+    ]
 
 
 }, {
