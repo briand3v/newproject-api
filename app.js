@@ -24,9 +24,9 @@ const user = require('./routes/user');
 const app = express();
 
 
+app.use(express.static("public"));
 
 // connect mongodb
-
 mongoose.Promise = Promise;
 mongoose.connect(process.env.MONGODB_URI, {
   keepAlive: true,
@@ -94,12 +94,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-
-
-
-
-
-app.use(express.static("public"));
 
 // session
 app.use(session({
