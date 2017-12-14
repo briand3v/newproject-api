@@ -73,26 +73,28 @@ passport.deserializeUser((userIdFromSession, cb) => {
 
 // corsssssssssssssss
 
-app.use(cors({
-  credentials: true,
-  origin: [process.env.CLIENT_URL]
-}));
+// app.use(cors({
+//   credentials: true,
+//   origin: [process.env.CLIENT_URL]
+// }));
 
 
 
 //some other code
 
-// app.use(function (req, res, next) {
-//   //set headers to allow cross origin request.
-//   res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
-//   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   res.header("Access-Control-Allow-Credentials", true);
-//   next();
-// });
+app.use(function (req, res, next) {
+  //set headers to allow cross origin request.
+  res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
+
+
 
 
 
